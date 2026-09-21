@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package hello;
+
+// replace this with your own github username and repo
+option go_package = "path/to/package";
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloResponse {
+  string greet = 1;
+}
+
+service HelloService {
+  rpc SayHello(HelloRequest) returns (HelloResponse) {}
+}
