@@ -19,4 +19,6 @@ service HelloService {
   rpc SayHello(HelloRequest) returns (HelloResponse) {} 
   // Server stream
   rpc SayManyHellos(HelloRequest) returns (stream HelloResponse) {} 
+  // Client stream
+  rpc SayHelloToEveryone(stream HelloRequest) returns (HelloResponse) {}
 }
