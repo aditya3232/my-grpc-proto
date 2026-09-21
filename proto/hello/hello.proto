@@ -3,10 +3,11 @@ syntax = "proto3";
 package hello;
 
 // replace this with your own github username and repo
-option go_package = "path/to/package";
+option go_package = "github.com/aditya3232/my-grpc-proto/protogen/go/hello";
 
 message HelloRequest {
   string name = 1;
+  uint32 age = 16;
 }
 
 message HelloResponse {
