@@ -15,5 +15,8 @@ message HelloResponse {
 }
 
 service HelloService {
-  rpc SayHello(HelloRequest) returns (HelloResponse) {}
+  // Unary
+  rpc SayHello(HelloRequest) returns (HelloResponse) {} 
+  // Server stream
+  rpc SayManyHellos(HelloRequest) returns (stream HelloResponse) {} 
 }
