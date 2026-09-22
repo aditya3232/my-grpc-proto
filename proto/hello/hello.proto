@@ -21,4 +21,6 @@ service HelloService {
   rpc SayManyHellos(HelloRequest) returns (stream HelloResponse) {} 
   // Client stream
   rpc SayHelloToEveryone(stream HelloRequest) returns (HelloResponse) {}
+  // Bi-Directional stream
+  rpc SayHelloContinous(stream HelloRequest) returns (stream HelloResponse) {}
 }
