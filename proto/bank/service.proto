@@ -22,4 +22,6 @@ service BankService {
   // bi directional stream
   rpc TransferMultiple(stream TransferRequest)
   returns (stream TransferResponse) {}
+  rpc CreateAccount(CreateAccountRequest) 
+  returns (CreateAccountResponse) {}
 }
