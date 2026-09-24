@@ -4,6 +4,7 @@ package bank;
 
 import "proto/bank/type/account.proto";
 import "proto/bank/type/exchange.proto";
+import "proto/bank/type/transaction.proto";
 
 option go_package = "github.com/aditya3232/my-grpc-proto/protogen/go/bank";
 
@@ -14,4 +15,7 @@ service BankService {
   // server stream
   rpc FetchExchangeRates(ExchangeRateRequest)
   returns (stream ExchangeRateResponse) {}
+  // client stream
+  rpc SummarizeTransactions(stream Transaction) 
+  returns (TransactionSummary) {}
 }
