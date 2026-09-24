@@ -22,6 +22,7 @@ const (
 	BankService_GetCurrentBalance_FullMethodName     = "/bank.BankService/GetCurrentBalance"
 	BankService_FetchExchangeRates_FullMethodName    = "/bank.BankService/FetchExchangeRates"
 	BankService_SummarizeTransactions_FullMethodName = "/bank.BankService/SummarizeTransactions"
+	BankService_TransferMultiple_FullMethodName      = "/bank.BankService/TransferMultiple"
 )
 
 // BankServiceClient is the client API for BankService service.
@@ -34,6 +35,8 @@ type BankServiceClient interface {
 	FetchExchangeRates(ctx context.Context, in *ExchangeRateRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ExchangeRateResponse], error)
 	// client stream
 	SummarizeTransactions(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[Transaction, TransactionSummary], error)
+	// bi directional stream
+	TransferMultiple(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[TransferRequest, TransferResponse], error)
 }
 
 type bankServiceClient struct {
@@ -86,6 +89,19 @@ func (c *bankServiceClient) SummarizeTransactions(ctx context.Context, opts ...g
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type BankService_SummarizeTransactionsClient = grpc.ClientStreamingClient[Transaction, TransactionSummary]
 
+func (c *bankServiceClient) TransferMultiple(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[TransferRequest, TransferResponse], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &BankService_ServiceDesc.Streams[2], BankService_TransferMultiple_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[TransferRequest, TransferResponse]{ClientStream: stream}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type BankService_TransferMultipleClient = grpc.BidiStreamingClient[TransferRequest, TransferResponse]
+
 // BankServiceServer is the server API for BankService service.
 // All implementations must embed UnimplementedBankServiceServer
 // for forward compatibility.
@@ -96,6 +112,8 @@ type BankServiceServer interface {
 	FetchExchangeRates(*ExchangeRateRequest, grpc.ServerStreamingServer[ExchangeRateResponse]) error
 	// client stream
 	SummarizeTransactions(grpc.ClientStreamingServer[Transaction, TransactionSummary]) error
+	// bi directional stream
+	TransferMultiple(grpc.BidiStreamingServer[TransferRequest, TransferResponse]) error
 	mustEmbedUnimplementedBankServiceServer()
 }
 
@@ -114,6 +132,9 @@ func (UnimplementedBankServiceServer) FetchExchangeRates(*ExchangeRateRequest, g
 }
 func (UnimplementedBankServiceServer) SummarizeTransactions(grpc.ClientStreamingServer[Transaction, TransactionSummary]) error {
 	return status.Error(codes.Unimplemented, "method SummarizeTransactions not implemented")
+}
+func (UnimplementedBankServiceServer) TransferMultiple(grpc.BidiStreamingServer[TransferRequest, TransferResponse]) error {
+	return status.Error(codes.Unimplemented, "method TransferMultiple not implemented")
 }
 func (UnimplementedBankServiceServer) mustEmbedUnimplementedBankServiceServer() {}
 func (UnimplementedBankServiceServer) testEmbeddedByValue()                     {}
@@ -172,6 +193,13 @@ func _BankService_SummarizeTransactions_Handler(srv interface{}, stream grpc.Ser
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type BankService_SummarizeTransactionsServer = grpc.ClientStreamingServer[Transaction, TransactionSummary]
 
+func _BankService_TransferMultiple_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(BankServiceServer).TransferMultiple(&grpc.GenericServerStream[TransferRequest, TransferResponse]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type BankService_TransferMultipleServer = grpc.BidiStreamingServer[TransferRequest, TransferResponse]
+
 // BankService_ServiceDesc is the grpc.ServiceDesc for BankService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -193,6 +221,12 @@ var BankService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "SummarizeTransactions",
 			Handler:       _BankService_SummarizeTransactions_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "TransferMultiple",
+			Handler:       _BankService_TransferMultiple_Handler,
+			ServerStreams: true,
 			ClientStreams: true,
 		},
 	},
