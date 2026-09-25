@@ -30,9 +30,9 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ResiliencyServiceClient interface {
 	UnaryResiliency(ctx context.Context, in *ResiliencyRequest, opts ...grpc.CallOption) (*ResiliencyResponse, error)
-	ServerStreamingResiliency(ctx context.Context, in *ResiliencyRequest, opts ...grpc.CallOption) (*ResiliencyResponse, error)
-	ClientStreamingResiliency(ctx context.Context, in *ResiliencyRequest, opts ...grpc.CallOption) (*ResiliencyResponse, error)
-	BiDirectionalResiliency(ctx context.Context, in *ResiliencyRequest, opts ...grpc.CallOption) (*ResiliencyResponse, error)
+	ServerStreamingResiliency(ctx context.Context, in *ResiliencyRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ResiliencyResponse], error)
+	ClientStreamingResiliency(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[ResiliencyRequest, ResiliencyResponse], error)
+	BiDirectionalResiliency(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[ResiliencyRequest, ResiliencyResponse], error)
 }
 
 type resiliencyServiceClient struct {
@@ -53,44 +53,59 @@ func (c *resiliencyServiceClient) UnaryResiliency(ctx context.Context, in *Resil
 	return out, nil
 }
 
-func (c *resiliencyServiceClient) ServerStreamingResiliency(ctx context.Context, in *ResiliencyRequest, opts ...grpc.CallOption) (*ResiliencyResponse, error) {
+func (c *resiliencyServiceClient) ServerStreamingResiliency(ctx context.Context, in *ResiliencyRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ResiliencyResponse], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ResiliencyResponse)
-	err := c.cc.Invoke(ctx, ResiliencyService_ServerStreamingResiliency_FullMethodName, in, out, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &ResiliencyService_ServiceDesc.Streams[0], ResiliencyService_ServerStreamingResiliency_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &grpc.GenericClientStream[ResiliencyRequest, ResiliencyResponse]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
 }
 
-func (c *resiliencyServiceClient) ClientStreamingResiliency(ctx context.Context, in *ResiliencyRequest, opts ...grpc.CallOption) (*ResiliencyResponse, error) {
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type ResiliencyService_ServerStreamingResiliencyClient = grpc.ServerStreamingClient[ResiliencyResponse]
+
+func (c *resiliencyServiceClient) ClientStreamingResiliency(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[ResiliencyRequest, ResiliencyResponse], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ResiliencyResponse)
-	err := c.cc.Invoke(ctx, ResiliencyService_ClientStreamingResiliency_FullMethodName, in, out, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &ResiliencyService_ServiceDesc.Streams[1], ResiliencyService_ClientStreamingResiliency_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &grpc.GenericClientStream[ResiliencyRequest, ResiliencyResponse]{ClientStream: stream}
+	return x, nil
 }
 
-func (c *resiliencyServiceClient) BiDirectionalResiliency(ctx context.Context, in *ResiliencyRequest, opts ...grpc.CallOption) (*ResiliencyResponse, error) {
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type ResiliencyService_ClientStreamingResiliencyClient = grpc.ClientStreamingClient[ResiliencyRequest, ResiliencyResponse]
+
+func (c *resiliencyServiceClient) BiDirectionalResiliency(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[ResiliencyRequest, ResiliencyResponse], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ResiliencyResponse)
-	err := c.cc.Invoke(ctx, ResiliencyService_BiDirectionalResiliency_FullMethodName, in, out, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &ResiliencyService_ServiceDesc.Streams[2], ResiliencyService_BiDirectionalResiliency_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &grpc.GenericClientStream[ResiliencyRequest, ResiliencyResponse]{ClientStream: stream}
+	return x, nil
 }
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type ResiliencyService_BiDirectionalResiliencyClient = grpc.BidiStreamingClient[ResiliencyRequest, ResiliencyResponse]
 
 // ResiliencyServiceServer is the server API for ResiliencyService service.
 // All implementations must embed UnimplementedResiliencyServiceServer
 // for forward compatibility.
 type ResiliencyServiceServer interface {
 	UnaryResiliency(context.Context, *ResiliencyRequest) (*ResiliencyResponse, error)
-	ServerStreamingResiliency(context.Context, *ResiliencyRequest) (*ResiliencyResponse, error)
-	ClientStreamingResiliency(context.Context, *ResiliencyRequest) (*ResiliencyResponse, error)
-	BiDirectionalResiliency(context.Context, *ResiliencyRequest) (*ResiliencyResponse, error)
+	ServerStreamingResiliency(*ResiliencyRequest, grpc.ServerStreamingServer[ResiliencyResponse]) error
+	ClientStreamingResiliency(grpc.ClientStreamingServer[ResiliencyRequest, ResiliencyResponse]) error
+	BiDirectionalResiliency(grpc.BidiStreamingServer[ResiliencyRequest, ResiliencyResponse]) error
 	mustEmbedUnimplementedResiliencyServiceServer()
 }
 
@@ -104,14 +119,14 @@ type UnimplementedResiliencyServiceServer struct{}
 func (UnimplementedResiliencyServiceServer) UnaryResiliency(context.Context, *ResiliencyRequest) (*ResiliencyResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method UnaryResiliency not implemented")
 }
-func (UnimplementedResiliencyServiceServer) ServerStreamingResiliency(context.Context, *ResiliencyRequest) (*ResiliencyResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method ServerStreamingResiliency not implemented")
+func (UnimplementedResiliencyServiceServer) ServerStreamingResiliency(*ResiliencyRequest, grpc.ServerStreamingServer[ResiliencyResponse]) error {
+	return status.Error(codes.Unimplemented, "method ServerStreamingResiliency not implemented")
 }
-func (UnimplementedResiliencyServiceServer) ClientStreamingResiliency(context.Context, *ResiliencyRequest) (*ResiliencyResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method ClientStreamingResiliency not implemented")
+func (UnimplementedResiliencyServiceServer) ClientStreamingResiliency(grpc.ClientStreamingServer[ResiliencyRequest, ResiliencyResponse]) error {
+	return status.Error(codes.Unimplemented, "method ClientStreamingResiliency not implemented")
 }
-func (UnimplementedResiliencyServiceServer) BiDirectionalResiliency(context.Context, *ResiliencyRequest) (*ResiliencyResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method BiDirectionalResiliency not implemented")
+func (UnimplementedResiliencyServiceServer) BiDirectionalResiliency(grpc.BidiStreamingServer[ResiliencyRequest, ResiliencyResponse]) error {
+	return status.Error(codes.Unimplemented, "method BiDirectionalResiliency not implemented")
 }
 func (UnimplementedResiliencyServiceServer) mustEmbedUnimplementedResiliencyServiceServer() {}
 func (UnimplementedResiliencyServiceServer) testEmbeddedByValue()                           {}
@@ -152,59 +167,30 @@ func _ResiliencyService_UnaryResiliency_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ResiliencyService_ServerStreamingResiliency_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ResiliencyRequest)
-	if err := dec(in); err != nil {
-		return nil, err
+func _ResiliencyService_ServerStreamingResiliency_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(ResiliencyRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
 	}
-	if interceptor == nil {
-		return srv.(ResiliencyServiceServer).ServerStreamingResiliency(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ResiliencyService_ServerStreamingResiliency_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ResiliencyServiceServer).ServerStreamingResiliency(ctx, req.(*ResiliencyRequest))
-	}
-	return interceptor(ctx, in, info, handler)
+	return srv.(ResiliencyServiceServer).ServerStreamingResiliency(m, &grpc.GenericServerStream[ResiliencyRequest, ResiliencyResponse]{ServerStream: stream})
 }
 
-func _ResiliencyService_ClientStreamingResiliency_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ResiliencyRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ResiliencyServiceServer).ClientStreamingResiliency(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ResiliencyService_ClientStreamingResiliency_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ResiliencyServiceServer).ClientStreamingResiliency(ctx, req.(*ResiliencyRequest))
-	}
-	return interceptor(ctx, in, info, handler)
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type ResiliencyService_ServerStreamingResiliencyServer = grpc.ServerStreamingServer[ResiliencyResponse]
+
+func _ResiliencyService_ClientStreamingResiliency_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(ResiliencyServiceServer).ClientStreamingResiliency(&grpc.GenericServerStream[ResiliencyRequest, ResiliencyResponse]{ServerStream: stream})
 }
 
-func _ResiliencyService_BiDirectionalResiliency_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ResiliencyRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ResiliencyServiceServer).BiDirectionalResiliency(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ResiliencyService_BiDirectionalResiliency_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ResiliencyServiceServer).BiDirectionalResiliency(ctx, req.(*ResiliencyRequest))
-	}
-	return interceptor(ctx, in, info, handler)
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type ResiliencyService_ClientStreamingResiliencyServer = grpc.ClientStreamingServer[ResiliencyRequest, ResiliencyResponse]
+
+func _ResiliencyService_BiDirectionalResiliency_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(ResiliencyServiceServer).BiDirectionalResiliency(&grpc.GenericServerStream[ResiliencyRequest, ResiliencyResponse]{ServerStream: stream})
 }
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type ResiliencyService_BiDirectionalResiliencyServer = grpc.BidiStreamingServer[ResiliencyRequest, ResiliencyResponse]
 
 // ResiliencyService_ServiceDesc is the grpc.ServiceDesc for ResiliencyService service.
 // It's only intended for direct use with grpc.RegisterService,
@@ -217,19 +203,24 @@ var ResiliencyService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "UnaryResiliency",
 			Handler:    _ResiliencyService_UnaryResiliency_Handler,
 		},
+	},
+	Streams: []grpc.StreamDesc{
 		{
-			MethodName: "ServerStreamingResiliency",
-			Handler:    _ResiliencyService_ServerStreamingResiliency_Handler,
+			StreamName:    "ServerStreamingResiliency",
+			Handler:       _ResiliencyService_ServerStreamingResiliency_Handler,
+			ServerStreams: true,
 		},
 		{
-			MethodName: "ClientStreamingResiliency",
-			Handler:    _ResiliencyService_ClientStreamingResiliency_Handler,
+			StreamName:    "ClientStreamingResiliency",
+			Handler:       _ResiliencyService_ClientStreamingResiliency_Handler,
+			ClientStreams: true,
 		},
 		{
-			MethodName: "BiDirectionalResiliency",
-			Handler:    _ResiliencyService_BiDirectionalResiliency_Handler,
+			StreamName:    "BiDirectionalResiliency",
+			Handler:       _ResiliencyService_BiDirectionalResiliency_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/resiliency/resiliency.proto",
 }

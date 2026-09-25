@@ -136,12 +136,12 @@ const file_proto_resiliency_resiliency_proto_rawDesc = "" +
 	"\x10max_delay_second\x18\x02 \x01(\x05R\x10max_delay_second\x12\"\n" +
 	"\fstatus_codes\x18\x03 \x03(\rR\fstatus_codes\"8\n" +
 	"\x12ResiliencyResponse\x12\"\n" +
-	"\fdummy_string\x18\x01 \x01(\tR\fdummy_string2\xff\x02\n" +
+	"\fdummy_string\x18\x01 \x01(\tR\fdummy_string2\x87\x03\n" +
 	"\x11ResiliencyService\x12R\n" +
-	"\x0fUnaryResiliency\x12\x1d.resiliency.ResiliencyRequest\x1a\x1e.resiliency.ResiliencyResponse\"\x00\x12\\\n" +
-	"\x19ServerStreamingResiliency\x12\x1d.resiliency.ResiliencyRequest\x1a\x1e.resiliency.ResiliencyResponse\"\x00\x12\\\n" +
-	"\x19ClientStreamingResiliency\x12\x1d.resiliency.ResiliencyRequest\x1a\x1e.resiliency.ResiliencyResponse\"\x00\x12Z\n" +
-	"\x17BiDirectionalResiliency\x12\x1d.resiliency.ResiliencyRequest\x1a\x1e.resiliency.ResiliencyResponse\"\x00B<Z:github.com/aditya3232/my-grpc-proto/protogen/go/resiliencyb\x06proto3"
+	"\x0fUnaryResiliency\x12\x1d.resiliency.ResiliencyRequest\x1a\x1e.resiliency.ResiliencyResponse\"\x00\x12^\n" +
+	"\x19ServerStreamingResiliency\x12\x1d.resiliency.ResiliencyRequest\x1a\x1e.resiliency.ResiliencyResponse\"\x000\x01\x12^\n" +
+	"\x19ClientStreamingResiliency\x12\x1d.resiliency.ResiliencyRequest\x1a\x1e.resiliency.ResiliencyResponse\"\x00(\x01\x12^\n" +
+	"\x17BiDirectionalResiliency\x12\x1d.resiliency.ResiliencyRequest\x1a\x1e.resiliency.ResiliencyResponse\"\x00(\x010\x01B<Z:github.com/aditya3232/my-grpc-proto/protogen/go/resiliencyb\x06proto3"
 
 var (
 	file_proto_resiliency_resiliency_proto_rawDescOnce sync.Once

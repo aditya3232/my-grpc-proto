@@ -19,10 +19,10 @@ service ResiliencyService {
   rpc UnaryResiliency(ResiliencyRequest)
   returns (ResiliencyResponse) {}
   rpc ServerStreamingResiliency(ResiliencyRequest)
+  returns (stream ResiliencyResponse) {}
+  rpc ClientStreamingResiliency(stream ResiliencyRequest)
   returns (ResiliencyResponse) {}
-  rpc ClientStreamingResiliency(ResiliencyRequest)
-  returns (ResiliencyResponse) {}
-  rpc BiDirectionalResiliency(ResiliencyRequest)
-  returns (ResiliencyResponse) {}
+  rpc BiDirectionalResiliency(stream ResiliencyRequest)
+  returns (stream ResiliencyResponse) {}
 }
 
