@@ -141,7 +141,12 @@ const file_proto_resiliency_resiliency_proto_rawDesc = "" +
 	"\x0fUnaryResiliency\x12\x1d.resiliency.ResiliencyRequest\x1a\x1e.resiliency.ResiliencyResponse\"\x00\x12^\n" +
 	"\x19ServerStreamingResiliency\x12\x1d.resiliency.ResiliencyRequest\x1a\x1e.resiliency.ResiliencyResponse\"\x000\x01\x12^\n" +
 	"\x19ClientStreamingResiliency\x12\x1d.resiliency.ResiliencyRequest\x1a\x1e.resiliency.ResiliencyResponse\"\x00(\x01\x12^\n" +
-	"\x17BiDirectionalResiliency\x12\x1d.resiliency.ResiliencyRequest\x1a\x1e.resiliency.ResiliencyResponse\"\x00(\x010\x01B<Z:github.com/aditya3232/my-grpc-proto/protogen/go/resiliencyb\x06proto3"
+	"\x17BiDirectionalResiliency\x12\x1d.resiliency.ResiliencyRequest\x1a\x1e.resiliency.ResiliencyResponse\"\x00(\x010\x012\xc3\x03\n" +
+	"\x1dResiliencyWithMetadataService\x12^\n" +
+	"\x1bUnaryResiliencyWithMetadata\x12\x1d.resiliency.ResiliencyRequest\x1a\x1e.resiliency.ResiliencyResponse\"\x00\x12j\n" +
+	"%ServerStreamingResiliencyWithMetadata\x12\x1d.resiliency.ResiliencyRequest\x1a\x1e.resiliency.ResiliencyResponse\"\x000\x01\x12j\n" +
+	"%ClientStreamingResiliencyWithMetadata\x12\x1d.resiliency.ResiliencyRequest\x1a\x1e.resiliency.ResiliencyResponse\"\x00(\x01\x12j\n" +
+	"#BiDirectionalResiliencyWithMetadata\x12\x1d.resiliency.ResiliencyRequest\x1a\x1e.resiliency.ResiliencyResponse\"\x00(\x010\x01B<Z:github.com/aditya3232/my-grpc-proto/protogen/go/resiliencyb\x06proto3"
 
 var (
 	file_proto_resiliency_resiliency_proto_rawDescOnce sync.Once
@@ -165,12 +170,20 @@ var file_proto_resiliency_resiliency_proto_depIdxs = []int32{
 	0, // 1: resiliency.ResiliencyService.ServerStreamingResiliency:input_type -> resiliency.ResiliencyRequest
 	0, // 2: resiliency.ResiliencyService.ClientStreamingResiliency:input_type -> resiliency.ResiliencyRequest
 	0, // 3: resiliency.ResiliencyService.BiDirectionalResiliency:input_type -> resiliency.ResiliencyRequest
-	1, // 4: resiliency.ResiliencyService.UnaryResiliency:output_type -> resiliency.ResiliencyResponse
-	1, // 5: resiliency.ResiliencyService.ServerStreamingResiliency:output_type -> resiliency.ResiliencyResponse
-	1, // 6: resiliency.ResiliencyService.ClientStreamingResiliency:output_type -> resiliency.ResiliencyResponse
-	1, // 7: resiliency.ResiliencyService.BiDirectionalResiliency:output_type -> resiliency.ResiliencyResponse
-	4, // [4:8] is the sub-list for method output_type
-	0, // [0:4] is the sub-list for method input_type
+	0, // 4: resiliency.ResiliencyWithMetadataService.UnaryResiliencyWithMetadata:input_type -> resiliency.ResiliencyRequest
+	0, // 5: resiliency.ResiliencyWithMetadataService.ServerStreamingResiliencyWithMetadata:input_type -> resiliency.ResiliencyRequest
+	0, // 6: resiliency.ResiliencyWithMetadataService.ClientStreamingResiliencyWithMetadata:input_type -> resiliency.ResiliencyRequest
+	0, // 7: resiliency.ResiliencyWithMetadataService.BiDirectionalResiliencyWithMetadata:input_type -> resiliency.ResiliencyRequest
+	1, // 8: resiliency.ResiliencyService.UnaryResiliency:output_type -> resiliency.ResiliencyResponse
+	1, // 9: resiliency.ResiliencyService.ServerStreamingResiliency:output_type -> resiliency.ResiliencyResponse
+	1, // 10: resiliency.ResiliencyService.ClientStreamingResiliency:output_type -> resiliency.ResiliencyResponse
+	1, // 11: resiliency.ResiliencyService.BiDirectionalResiliency:output_type -> resiliency.ResiliencyResponse
+	1, // 12: resiliency.ResiliencyWithMetadataService.UnaryResiliencyWithMetadata:output_type -> resiliency.ResiliencyResponse
+	1, // 13: resiliency.ResiliencyWithMetadataService.ServerStreamingResiliencyWithMetadata:output_type -> resiliency.ResiliencyResponse
+	1, // 14: resiliency.ResiliencyWithMetadataService.ClientStreamingResiliencyWithMetadata:output_type -> resiliency.ResiliencyResponse
+	1, // 15: resiliency.ResiliencyWithMetadataService.BiDirectionalResiliencyWithMetadata:output_type -> resiliency.ResiliencyResponse
+	8, // [8:16] is the sub-list for method output_type
+	0, // [0:8] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -189,7 +202,7 @@ func file_proto_resiliency_resiliency_proto_init() {
 			NumEnums:      0,
 			NumMessages:   2,
 			NumExtensions: 0,
-			NumServices:   1,
+			NumServices:   2,
 		},
 		GoTypes:           file_proto_resiliency_resiliency_proto_goTypes,
 		DependencyIndexes: file_proto_resiliency_resiliency_proto_depIdxs,
