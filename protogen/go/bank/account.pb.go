@@ -24,7 +24,7 @@ const (
 
 type CurrentBalanceRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AccoutNumber  string                 `protobuf:"bytes,1,opt,name=accout_number,json=account_number,proto3" json:"accout_number,omitempty"`
+	AccountNumber string                 `protobuf:"bytes,1,opt,name=account_number,proto3" json:"account_number,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -59,9 +59,9 @@ func (*CurrentBalanceRequest) Descriptor() ([]byte, []int) {
 	return file_proto_bank_type_account_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CurrentBalanceRequest) GetAccoutNumber() string {
+func (x *CurrentBalanceRequest) GetAccountNumber() string {
 	if x != nil {
-		return x.AccoutNumber
+		return x.AccountNumber
 	}
 	return ""
 }
@@ -226,9 +226,9 @@ var File_proto_bank_type_account_proto protoreflect.FileDescriptor
 
 const file_proto_bank_type_account_proto_rawDesc = "" +
 	"\n" +
-	"\x1dproto/bank/type/account.proto\x12\x04bank\x1a\x1cproto/google/type/date.proto\">\n" +
-	"\x15CurrentBalanceRequest\x12%\n" +
-	"\raccout_number\x18\x01 \x01(\tR\x0eaccount_number\"g\n" +
+	"\x1dproto/bank/type/account.proto\x12\x04bank\x1a\x1cproto/google/type/date.proto\"?\n" +
+	"\x15CurrentBalanceRequest\x12&\n" +
+	"\x0eaccount_number\x18\x01 \x01(\tR\x0eaccount_number\"g\n" +
 	"\x16CurrentBalanceResponse\x12\x16\n" +
 	"\x06amount\x18\x01 \x01(\x01R\x06amount\x125\n" +
 	"\fcurrent_date\x18\x02 \x01(\v2\x11.google.type.DateR\fcurrent_date\"\x8e\x01\n" +
