@@ -24,3 +24,15 @@ source ~/.zshrc
 ```bash
 which protoc-gen-go protoc-gen-go-grpc
 ```
+
+## 2. Install Grpc-Gateway
+- pasang plugin
+```bash
+go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@latest
+go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
+```
+
+- verify
+```bash
+which protoc-gen-grpc-gateway protoc-gen-go protoc-gen-go-grpc
+```
